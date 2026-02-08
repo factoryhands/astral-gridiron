@@ -266,21 +266,26 @@ export default function AstralGridiron() {
         @keyframes twinkle { 0%,100%{opacity:0.15} 50%{opacity:0.8} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        select { background:#000; color:#fff; border:1px solid #222; padding:10px 32px 10px 14px; font-size:13px; letter-spacing:0.08em; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; font-family:inherit; outline:none; transition:border-color 0.2s; min-height:44px; }
+        select { background:#000; color:#fff; border:1px solid #222; padding:10px 32px 10px 14px; font-size:13px; letter-spacing:0.08em; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; font-family:inherit; outline:none; transition:border-color 0.2s; min-height:44px; box-sizing:border-box; }
         select:hover,select:focus { border-color:#444; }
         select option { background:#000; color:#fff; }
+        .qb-select { flex: 1 1 200px; max-width: 300px; min-width: 0; }
+        .selector-bar { padding: 16px 20px; }
+        .selector-wrap { width: 100%; }
         .card:hover { border-color:#333 !important; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .legend-dot { display:inline-block; width:10px; height:2px; margin-right:8px; vertical-align:middle; }
         @media(max-width:767px) {
           .two-col { flex-direction:column !important; }
-          .selector-wrap select { width:100%; max-width:none; }
+          .selector-bar { padding: 16px 16px !important; }
+          .selector-wrap .qb-select { flex: 1 1 100% !important; width: 100% !important; max-width: none !important; min-width: 0 !important; }
+          .selector-wrap .qb-select { font-size: 16px; }
+          .selector-wrap.two-col .selector-vs { margin: 6px 0; }
           .card-grid { flex-direction:column !important; }
           .rating-grid { grid-template-columns:1fr !important; }
           .day-tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; flex-wrap:nowrap; justify-content:flex-start; }
           .section-responsive { padding-left:16px !important; padding-right:16px !important; }
           .header-responsive { padding:48px 16px 32px !important; }
-          .selector-wrap { padding-left:12px !important; padding-right:12px !important; }
           .card-responsive { padding:24px 16px !important; }
           .chart-radar { height:280px !important; }
           .chart-bar { height:260px !important; }
@@ -291,7 +296,9 @@ export default function AstralGridiron() {
         @media(max-width:480px) {
           .section-responsive { padding-left:12px !important; padding-right:12px !important; }
           .header-responsive { padding:40px 12px 24px !important; }
-          .selector-wrap { padding-left:10px !important; padding-right:10px !important; }
+          .selector-bar { padding: 12px 12px !important; }
+          .selector-wrap { padding-left:0 !important; padding-right:0 !important; }
+          .selector-wrap .qb-select { font-size: 16px; padding: 12px 36px 12px 12px; }
           .card-responsive { padding:20px 12px !important; }
           .day-tabs button { padding:10px 10px; font-size:10px; letter-spacing:0.1em; min-width:44px; }
           .chart-radar { height:260px !important; }
@@ -320,17 +327,17 @@ export default function AstralGridiron() {
         </header>
 
         {/* ─── SELECTORS ─── */}
-        <div style={{
-          position: "sticky", top: 0, zIndex: 20, padding: "16px 20px",
+        <div className="selector-bar" style={{
+          position: "sticky", top: 0, zIndex: 20,
           background: "rgba(0,0,0,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid #111"
         }}>
           <div className="selector-wrap two-col" style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <select value={p1i} onChange={e => setP1i(Number(e.target.value))} style={{ flex: "1 1 200px", maxWidth: 300 }}>
+            <select className="qb-select" value={p1i} onChange={e => setP1i(Number(e.target.value))} aria-label="Select first quarterback">
               {PLAYERS.map((p, i) => <option key={i} value={i}>{p.name} · {p.abbr} · {p.symbol}</option>)}
             </select>
-            <span style={{ color: "#333", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase" }}>vs</span>
-            <select value={p2i} onChange={e => setP2i(Number(e.target.value))} style={{ flex: "1 1 200px", maxWidth: 300 }}>
+            <span className="selector-vs" style={{ color: "#333", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", flexShrink: 0 }}>vs</span>
+            <select className="qb-select" value={p2i} onChange={e => setP2i(Number(e.target.value))} aria-label="Select second quarterback">
               {PLAYERS.map((p, i) => <option key={i} value={i}>{p.name} · {p.abbr} · {p.symbol}</option>)}
             </select>
           </div>
