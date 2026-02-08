@@ -260,13 +260,13 @@ export default function AstralGridiron() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#000", color: "#fff", fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif", lineHeight: 1.6, WebkitFontSmoothing: "antialiased" }}>
+    <div style={{ minHeight: "100vh", background: "#000", color: "#fff", fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif", lineHeight: 1.6, WebkitFontSmoothing: "antialiased", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
         @keyframes twinkle { 0%,100%{opacity:0.15} 50%{opacity:0.8} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-        select { background:#000; color:#fff; border:1px solid #222; padding:10px 32px 10px 14px; font-size:13px; letter-spacing:0.08em; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; font-family:inherit; outline:none; transition:border-color 0.2s; }
+        select { background:#000; color:#fff; border:1px solid #222; padding:10px 32px 10px 14px; font-size:13px; letter-spacing:0.08em; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; font-family:inherit; outline:none; transition:border-color 0.2s; min-height:44px; }
         select:hover,select:focus { border-color:#444; }
         select option { background:#000; color:#fff; }
         .card:hover { border-color:#333 !important; }
@@ -274,9 +274,32 @@ export default function AstralGridiron() {
         .legend-dot { display:inline-block; width:10px; height:2px; margin-right:8px; vertical-align:middle; }
         @media(max-width:767px) {
           .two-col { flex-direction:column !important; }
+          .selector-wrap select { width:100%; max-width:none; }
           .card-grid { flex-direction:column !important; }
           .rating-grid { grid-template-columns:1fr !important; }
-          .day-tabs { overflow-x:auto; }
+          .day-tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; flex-wrap:nowrap; justify-content:flex-start; }
+          .section-responsive { padding-left:16px !important; padding-right:16px !important; }
+          .header-responsive { padding:48px 16px 32px !important; }
+          .selector-wrap { padding-left:12px !important; padding-right:12px !important; }
+          .card-responsive { padding:24px 16px !important; }
+          .chart-radar { height:280px !important; }
+          .chart-bar { height:260px !important; }
+          .chart-forecast { height:200px !important; }
+          .compat-label { width:100px !important; min-width:80px !important; font-size:9px !important; }
+          .footer-responsive { padding:48px 16px 32px !important; }
+        }
+        @media(max-width:480px) {
+          .section-responsive { padding-left:12px !important; padding-right:12px !important; }
+          .header-responsive { padding:40px 12px 24px !important; }
+          .selector-wrap { padding-left:10px !important; padding-right:10px !important; }
+          .card-responsive { padding:20px 12px !important; }
+          .day-tabs button { padding:10px 10px; font-size:10px; letter-spacing:0.1em; min-width:44px; }
+          .chart-radar { height:260px !important; }
+          .chart-bar { height:240px !important; }
+          .chart-forecast { height:180px !important; }
+          .compat-label { width:auto !important; min-width:0 !important; }
+          .compat-row { flex-wrap:wrap; gap:6px !important; }
+          .footer-responsive { padding:40px 12px 24px !important; }
         }
       `}</style>
 
@@ -284,7 +307,7 @@ export default function AstralGridiron() {
 
       {/* ─── HEADER ─── */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        <header style={{ textAlign: "center", padding: "80px 20px 40px" }}>
+        <header className="header-responsive" style={{ textAlign: "center", padding: "80px 20px 40px" }}>
           <p style={{ fontSize: 10, letterSpacing: "0.4em", color: "#444", marginBottom: 16, textTransform: "uppercase" }}>
             ✦ Where the cosmos meets the gridiron ✦
           </p>
@@ -302,7 +325,7 @@ export default function AstralGridiron() {
           background: "rgba(0,0,0,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid #111"
         }}>
-          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }} className="two-col">
+          <div className="selector-wrap two-col" style={{ maxWidth: 960, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <select value={p1i} onChange={e => setP1i(Number(e.target.value))} style={{ flex: "1 1 200px", maxWidth: 300 }}>
               {PLAYERS.map((p, i) => <option key={i} value={i}>{p.name} · {p.abbr} · {p.symbol}</option>)}
             </select>
@@ -314,10 +337,10 @@ export default function AstralGridiron() {
         </div>
 
         {/* ─── ZODIAC CARDS ─── */}
-        <section style={{ ...sectionStyle, paddingTop: 56 }}>
+        <section className="section-responsive" style={{ ...sectionStyle, paddingTop: 56 }}>
           <div style={{ display: "flex", gap: 1 }} className="card-grid">
             {[p1, p2].map((p, idx) => (
-              <div key={idx} className="card" style={{ ...cardStyle, animation: `fadeUp 0.6s ease ${idx * 0.15}s both` }}>
+              <div key={idx} className="card card-responsive" style={{ ...cardStyle, animation: `fadeUp 0.6s ease ${idx * 0.15}s both` }}>
                 <div style={{ textAlign: "center" }}>
                   <div style={{ fontSize: "clamp(48px, 10vw, 80px)", lineHeight: 1, marginBottom: 8, textShadow: "0 0 40px rgba(255,255,255,0.08)" }}>
                     {p.symbol}
@@ -356,7 +379,7 @@ export default function AstralGridiron() {
         <Divider />
 
         {/* ─── WEEKLY COSMIC READING ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>This Week's Cosmic Reading</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
             {[p1, p2].map((p, idx) => (
@@ -376,7 +399,7 @@ export default function AstralGridiron() {
         <Divider />
 
         {/* ─── CELESTIAL POWER RATINGS ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>Celestial Power Ratings</p>
           <div className="rating-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
             {[p1, p2].map((p, pi) => (
@@ -400,7 +423,7 @@ export default function AstralGridiron() {
         <Divider />
 
         {/* ─── STAT CONSTELLATION (RADAR) ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>Stat Constellation</p>
           <p style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 16 }}>{STATS_SEASON}</p>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
@@ -409,7 +432,8 @@ export default function AstralGridiron() {
               <span><span className="legend-dot" style={{ background: "#555" }} />{p2.name}</span>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={340}>
+          <div className="chart-radar" style={{ width: "100%", height: 340 }}>
+          <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={radarData} style={{ fontSize: 11 }}>
               <PolarGrid stroke="#1a1a1a" />
               <PolarAngleAxis dataKey="stat" tick={{ fill: "#555", fontSize: 10 }} />
@@ -419,12 +443,13 @@ export default function AstralGridiron() {
               <Tooltip content={<Tip />} />
             </RadarChart>
           </ResponsiveContainer>
+          </div>
         </section>
 
         <Divider />
 
         {/* ─── BY THE NUMBERS (BAR CHART) ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>By the Numbers</p>
           <p style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 16 }}>{STATS_SEASON}</p>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
@@ -433,7 +458,8 @@ export default function AstralGridiron() {
               <span><span className="legend-dot" style={{ background: "#444" }} />{p2.name}</span>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
+          <div className="chart-bar" style={{ width: "100%", height: 280 }}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} layout="vertical" barGap={2} barSize={8}>
               <CartesianGrid stroke="#111" horizontal={false} />
               <XAxis type="number" domain={[0, 100]} tick={{ fill: "#444", fontSize: 10 }} axisLine={{ stroke: "#1a1a1a" }} />
@@ -443,12 +469,13 @@ export default function AstralGridiron() {
               <Bar dataKey="p2" fill="#444" name={p2.name} radius={[0, 2, 2, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </section>
 
         <Divider />
 
         {/* ─── WEEKLY FORECAST ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>Weekly Cosmic Forecast</p>
 
           {/* Day Tabs */}
@@ -502,7 +529,8 @@ export default function AstralGridiron() {
               <span><span className="legend-dot" style={{ background: "#555" }} />{p2.name}</span>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <div className="chart-forecast" style={{ width: "100%", height: 220 }}>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={forecastData}>
               <CartesianGrid stroke="#111" />
               <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 10 }} axisLine={{ stroke: "#1a1a1a" }} />
@@ -512,12 +540,13 @@ export default function AstralGridiron() {
               <Area type="monotone" dataKey={p2.name} stroke="#555" fill="#555" fillOpacity={0.03} strokeWidth={1.5} dot={{ r: 2, fill: "#555" }} />
             </AreaChart>
           </ResponsiveContainer>
+          </div>
         </section>
 
         <Divider />
 
         {/* ─── COSMIC COMPATIBILITY ─── */}
-        <section style={sectionStyle}>
+        <section className="section-responsive" style={sectionStyle}>
           <p style={headerStyle}>Cosmic Compatibility</p>
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginBottom: 20 }}>
@@ -546,8 +575,8 @@ export default function AstralGridiron() {
               ["Clutch Dynamics", Math.min(100, compat.score + 3)],
               ["Cosmic Synergy", compat.score]
             ].map(([label, val]) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 10, letterSpacing: "0.12em", color: "#555", textTransform: "uppercase", width: 120, flexShrink: 0 }}>{label}</span>
+              <div key={label} className="compat-row" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span className="compat-label" style={{ fontSize: 10, letterSpacing: "0.12em", color: "#555", textTransform: "uppercase", width: 120, flexShrink: 0 }}>{label}</span>
                 <div style={{ flex: 1, height: 1, background: "#111", borderRadius: 1, overflow: "hidden" }}>
                   <div style={{ height: "100%", background: "linear-gradient(90deg, #333, #fff)", width: `${val}%`, transition: "width 0.8s ease" }} />
                 </div>
@@ -558,7 +587,7 @@ export default function AstralGridiron() {
         </section>
 
         {/* ─── FOOTER ─── */}
-        <footer style={{ textAlign: "center", padding: "80px 20px 48px" }}>
+        <footer className="footer-responsive" style={{ textAlign: "center", padding: "80px 20px 48px" }}>
           <div style={{ height: 1, background: "#111", maxWidth: 200, margin: "0 auto 32px" }} />
           <p style={{ fontSize: 10, letterSpacing: "0.3em", color: "#333", textTransform: "uppercase", marginBottom: 8 }}>
             ✦ Astral Gridiron ✦
