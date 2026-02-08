@@ -26,17 +26,17 @@ const PLAYERS = [
     birthday: "August 30, 2002", zodiac: "Virgo", symbol: "♍",
     element: "Earth", quality: "Mutable", planet: "Mercury",
     traits: "Analytical · Precise · Methodical",
-    stats: { yards: 2276, tds: 15, ints: 10, comp: 59.0, rating: 78.9, ypa: 6.5 },
+    stats: { yards: 2276, tds: 15, ints: 10, comp: 66.6, rating: 88.1, ypa: 6.7 },
     cosmic: [3, 3, 4, 2, 3, 3],
     forecast: [75, 68, 82, 77, 85, 80, 84],
-    reading: "Saturn forms a harmonious trine with your natal Mercury, sharpening the Virgoan eye for detail to surgical precision. Maye's meticulous pre-snap reads — the purest Virgo energy in the NFL — reach peak clarity this week. Mars entering your sixth house of discipline translates extra film-study hours directly into on-field execution. While his 59.0% completion rate tells one chapter, the cosmic narrative reveals systematic mastery still unfolding. Jupiter's expansive transit through your tenth house of career signals a pivotal moment for a young arm. His 15 touchdowns, each precisely engineered with Virgoan exactitude, could see a significant addition. Watch for surgical red-zone precision as the stars align for Maye's most complete performance of the season."
+    reading: "Saturn forms a harmonious trine with your natal Mercury, sharpening the Virgoan eye for detail to surgical precision. Maye's meticulous pre-snap reads — the purest Virgo energy in the NFL — reach peak clarity this week. Mars entering your sixth house of discipline translates extra film-study hours directly into on-field execution. While his 66.6% completion rate tells one chapter, the cosmic narrative reveals systematic mastery still unfolding. Jupiter's expansive transit through your tenth house of career signals a pivotal moment for a young arm. His 15 touchdowns, each precisely engineered with Virgoan exactitude, could see a significant addition. Watch for surgical red-zone precision as the stars align for Maye's most complete performance of the season."
   },
   {
     name: "Patrick Mahomes", team: "Kansas City Chiefs", abbr: "KC", number: 15,
     birthday: "September 17, 1995", zodiac: "Virgo", symbol: "♍",
     element: "Earth", quality: "Mutable", planet: "Mercury",
     traits: "Analytical · Precise · Methodical",
-    stats: { yards: 3928, tds: 26, ints: 11, comp: 67.5, rating: 95.5, ypa: 7.0 },
+    stats: { yards: 3928, tds: 26, ints: 11, comp: 67.5, rating: 93.5, ypa: 7.0 },
     cosmic: [5, 5, 5, 5, 5, 5],
     forecast: [80, 75, 88, 82, 90, 85, 95],
     reading: "Saturn's trine with your natal Mercury fortifies the legendary Virgoan precision that has made Mahomes the standard-bearer of his generation. With 3,928 passing yards sculpted through meticulous defensive study, this week's cosmic architecture elevates his game further. Mars in your sixth house transforms preparation into prophecy — every pattern recognized in the film room becomes a touchdown on Sunday. His 67.5% completion rate approaches perfection under this transit. Jupiter in your tenth house of legacy means each game now writes history. Watch for his 26 touchdowns to grow as Virgo's analytical nature pairs with physical genius in perfect celestial harmony."
@@ -66,16 +66,17 @@ const PLAYERS = [
     birthday: "December 27, 1999", zodiac: "Capricorn", symbol: "♑",
     element: "Earth", quality: "Cardinal", planet: "Saturn",
     traits: "Disciplined · Strategic · Relentless",
-    stats: { yards: 3864, tds: 20, ints: 12, comp: 66.0, rating: 90.8, ypa: 7.3 },
+    stats: { yards: 3864, tds: 20, ints: 12, comp: 66.0, rating: 96.1, ypa: 8.5 },
     cosmic: [3, 4, 2, 4, 4, 3],
     forecast: [78, 80, 76, 82, 84, 86, 88],
-    reading: "Saturn forms a grand trine with Mercury and the Moon, constructing a cosmic architecture of discipline that mirrors Purdy's methodical approach. Capricorn quarterbacks build drives like cathedrals — each play a stone laid with precision. His 3,864 passing yards represent the mountain goat's patient, relentless ascent. Pluto's continued transit through your sign deepens transformative energy, suggesting Purdy will unlock a dimension of play that silences remaining doubt. With 20 touchdowns and a 66.0% completion rate, every throw carries the weight of Capricorn's quiet ambition. His 7.3 yards per attempt climbs as Saturn rewards preparation with ever-greater precision."
+    reading: "Saturn forms a grand trine with Mercury and the Moon, constructing a cosmic architecture of discipline that mirrors Purdy's methodical approach. Capricorn quarterbacks build drives like cathedrals — each play a stone laid with precision. His 3,864 passing yards represent the mountain goat's patient, relentless ascent. Pluto's continued transit through your sign deepens transformative energy, suggesting Purdy will unlock a dimension of play that silences remaining doubt. With 20 touchdowns and a 66.0% completion rate, every throw carries the weight of Capricorn's quiet ambition. His 8.5 yards per attempt climbs as Saturn rewards preparation with ever-greater precision."
   }
 ];
 
 const COSMIC_CATS = ["Arm Strength", "Decision Making", "Mobility", "Clutch Factor", "Field Vision", "Leadership"];
 const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const STAT_LABELS = ["Pass Yards", "Touchdowns", "Interceptions", "Comp %", "Rating", "YPA"];
+const STATS_SEASON = "2024 Regular Season";
 
 const DAILY = {
   Gemini: [
@@ -159,14 +160,26 @@ const Stars = () => {
   );
 };
 
+const formatStatValue = (value, statKey) => {
+  if (value == null) return "—";
+  if (statKey === "Comp %" || statKey === "Rating" || statKey === "YPA") return typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value;
+  return typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value;
+};
+
 const Tip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
+  const row = payload[0]?.payload;
+  const hasRaw = row && ("p1Raw" in row || "p2Raw" in row);
   return (
     <div style={{ background: "#0a0a0a", border: "1px solid #333", padding: "10px 14px", fontSize: 12 }}>
       <p style={{ color: "#666", marginBottom: 4, textTransform: "uppercase", letterSpacing: 2, fontSize: 10 }}>{label}</p>
-      {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color, margin: "2px 0" }}>{p.name}: <strong>{typeof p.value === "number" && p.value % 1 !== 0 ? p.value.toFixed(1) : p.value}</strong></p>
-      ))}
+      {payload.map((p, i) => {
+        const rawVal = hasRaw ? row[p.dataKey + "Raw"] : null;
+        const display = rawVal != null ? formatStatValue(rawVal, label) : (typeof p.value === "number" && p.value % 1 !== 0 ? p.value.toFixed(1) : p.value);
+        return (
+          <p key={i} style={{ color: p.color, margin: "2px 0" }}>{p.name}: <strong>{display}</strong></p>
+        );
+      })}
     </div>
   );
 };
@@ -213,14 +226,26 @@ export default function AstralGridiron() {
     { stat: "Ball Security", p1: Math.round(100 - p1.stats.ints * 4), p2: Math.round(100 - p2.stats.ints * 4) },
   ], [p1, p2]);
 
-  const barData = useMemo(() => [
-    { stat: "Pass Yards", p1: p1.stats.yards, p2: p2.stats.yards },
-    { stat: "Touchdowns", p1: p1.stats.tds, p2: p2.stats.tds },
-    { stat: "Comp %", p1: p1.stats.comp, p2: p2.stats.comp },
-    { stat: "Rating", p1: p1.stats.rating, p2: p2.stats.rating },
-    { stat: "YPA", p1: p1.stats.ypa, p2: p2.stats.ypa },
-    { stat: "INTs", p1: p1.stats.ints, p2: p2.stats.ints },
-  ], [p1, p2]);
+  const barData = useMemo(() => {
+    const rows = [
+      { stat: "Pass Yards", p1Raw: p1.stats.yards, p2Raw: p2.stats.yards },
+      { stat: "Touchdowns", p1Raw: p1.stats.tds, p2Raw: p2.stats.tds },
+      { stat: "Comp %", p1Raw: p1.stats.comp, p2Raw: p2.stats.comp },
+      { stat: "Rating", p1Raw: p1.stats.rating, p2Raw: p2.stats.rating },
+      { stat: "YPA", p1Raw: p1.stats.ypa, p2Raw: p2.stats.ypa },
+      { stat: "INTs", p1Raw: p1.stats.ints, p2Raw: p2.stats.ints },
+    ];
+    return rows.map(({ stat, p1Raw, p2Raw }) => {
+      const maxVal = Math.max(p1Raw, p2Raw, 1);
+      return {
+        stat,
+        p1: (p1Raw / maxVal) * 100,
+        p2: (p2Raw / maxVal) * 100,
+        p1Raw,
+        p2Raw,
+      };
+    });
+  }, [p1, p2]);
 
   const forecastData = useMemo(() =>
     DAYS.map((d, i) => ({ day: d, [p1.name]: p1.forecast[i], [p2.name]: p2.forecast[i] })),
@@ -377,6 +402,7 @@ export default function AstralGridiron() {
         {/* ─── STAT CONSTELLATION (RADAR) ─── */}
         <section style={sectionStyle}>
           <p style={headerStyle}>Stat Constellation</p>
+          <p style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 16 }}>{STATS_SEASON}</p>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
             <div style={{ display: "flex", gap: 24, fontSize: 11, color: "#555" }}>
               <span><span className="legend-dot" style={{ background: "#fff" }} />{p1.name}</span>
@@ -400,6 +426,7 @@ export default function AstralGridiron() {
         {/* ─── BY THE NUMBERS (BAR CHART) ─── */}
         <section style={sectionStyle}>
           <p style={headerStyle}>By the Numbers</p>
+          <p style={{ fontSize: 11, color: "#555", letterSpacing: "0.1em", marginBottom: 16 }}>{STATS_SEASON}</p>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
             <div style={{ display: "flex", gap: 24, fontSize: 11, color: "#555" }}>
               <span><span className="legend-dot" style={{ background: "#fff" }} />{p1.name}</span>
@@ -409,7 +436,7 @@ export default function AstralGridiron() {
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={barData} layout="vertical" barGap={2} barSize={8}>
               <CartesianGrid stroke="#111" horizontal={false} />
-              <XAxis type="number" tick={{ fill: "#444", fontSize: 10 }} axisLine={{ stroke: "#1a1a1a" }} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fill: "#444", fontSize: 10 }} axisLine={{ stroke: "#1a1a1a" }} />
               <YAxis type="category" dataKey="stat" tick={{ fill: "#666", fontSize: 10, letterSpacing: 1 }} width={80} axisLine={false} tickLine={false} />
               <Tooltip content={<Tip />} />
               <Bar dataKey="p1" fill="#fff" name={p1.name} radius={[0, 2, 2, 0]} />
@@ -538,6 +565,9 @@ export default function AstralGridiron() {
           </p>
           <p style={{ fontSize: 11, color: "#2a2a2a", fontWeight: 300, fontStyle: "italic" }}>
             Celestial data for entertainment purposes only. The stars reveal tendencies, not certainties.
+          </p>
+          <p style={{ fontSize: 10, color: "#333", marginTop: 8, letterSpacing: "0.08em" }}>
+            Player performance stats: {STATS_SEASON}.
           </p>
         </footer>
       </div>
