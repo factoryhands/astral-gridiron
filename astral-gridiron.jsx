@@ -292,6 +292,11 @@ export default function AstralGridiron() {
           .chart-forecast { height:200px !important; }
           .compat-label { width:100px !important; min-width:80px !important; font-size:9px !important; }
           .footer-responsive { padding:48px 16px 32px !important; }
+          .forecast-day-tabs { margin-bottom: 20px !important; padding: 0 4px; scroll-snap-type: x mandatory; }
+          .forecast-day-tabs button { scroll-snap-align: center; }
+          .forecast-readings { gap: 16px !important; margin-bottom: 24px !important; }
+          .forecast-reading-card { min-width: 0 !important; flex: 1 1 100% !important; }
+          .forecast-legend { flex-wrap: wrap; justify-content: center; gap: 12px; }
         }
         @media(max-width:480px) {
           .section-responsive { padding-left:12px !important; padding-right:12px !important; }
@@ -307,6 +312,12 @@ export default function AstralGridiron() {
           .compat-label { width:auto !important; min-width:0 !important; }
           .compat-row { flex-wrap:wrap; gap:6px !important; }
           .footer-responsive { padding:40px 12px 24px !important; }
+          .forecast-day-tabs { margin-bottom: 16px !important; padding: 0 2px; }
+          .forecast-readings { gap: 12px !important; margin-bottom: 20px !important; }
+          .forecast-reading-card .forecast-reading-text { font-size: 12px !important; line-height: 1.65 !important; }
+          .forecast-alignment-row { gap: 6px !important; }
+          .forecast-alignment-row .forecast-alignment-label { font-size: 8px !important; letter-spacing: 0.15em !important; }
+          .forecast-legend { flex-direction: column; align-items: center; gap: 6px; }
         }
       `}</style>
 
@@ -486,7 +497,7 @@ export default function AstralGridiron() {
           <p style={headerStyle}>Weekly Cosmic Forecast</p>
 
           {/* Day Tabs */}
-          <div className="day-tabs" style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 32 }}>
+          <div className="day-tabs forecast-day-tabs" style={{ display: "flex", justifyContent: "center", gap: 0, marginBottom: 32 }}>
             {DAYS.map((d, i) => (
               <button key={i} onClick={() => setDay(i)} style={{
                 padding: "10px 14px", fontSize: 11, letterSpacing: "0.15em",
@@ -503,25 +514,25 @@ export default function AstralGridiron() {
           </div>
 
           {/* Daily Readings */}
-          <div style={{ display: "flex", gap: 24, marginBottom: 32, flexWrap: "wrap" }} className="two-col">
+          <div className="forecast-readings two-col" style={{ display: "flex", gap: 24, marginBottom: 32, flexWrap: "wrap" }}>
             {[p1, p2].map((p, idx) => (
-              <div key={idx} style={{ flex: "1 1 300px" }}>
+              <div key={idx} className="forecast-reading-card" style={{ flex: "1 1 300px", minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                   <span style={{ fontSize: 16 }}>{p.symbol}</span>
                   <span style={{ fontSize: 11, color: "#555", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.name}</span>
                 </div>
-                <p style={{ fontSize: 13, color: "#888", fontWeight: 300, lineHeight: 1.7 }}>
+                <p className="forecast-reading-text" style={{ fontSize: 13, color: "#888", fontWeight: 300, lineHeight: 1.7 }}>
                   {DAILY[p.zodiac]?.[day] || "The stars are quiet today. Rest and prepare."}
                 </p>
-                <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 9, letterSpacing: "0.2em", color: "#444", textTransform: "uppercase" }}>Cosmic Alignment</span>
-                  <div style={{ flex: 1, height: 2, background: "#111", borderRadius: 1, overflow: "hidden" }}>
+                <div className="forecast-alignment-row" style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span className="forecast-alignment-label" style={{ fontSize: 9, letterSpacing: "0.2em", color: "#444", textTransform: "uppercase", flexShrink: 0 }}>Cosmic Alignment</span>
+                  <div style={{ flex: 1, minWidth: 0, height: 2, background: "#111", borderRadius: 1, overflow: "hidden" }}>
                     <div style={{
                       height: "100%", background: idx === 0 ? "#fff" : "#555",
                       width: `${p.forecast[day]}%`, transition: "width 0.5s ease", borderRadius: 1
                     }} />
                   </div>
-                  <span style={{ fontSize: 12, color: idx === 0 ? "#fff" : "#555", fontWeight: 500, minWidth: 28, textAlign: "right" }}>
+                  <span style={{ fontSize: 12, color: idx === 0 ? "#fff" : "#555", fontWeight: 500, minWidth: 28, textAlign: "right", flexShrink: 0 }}>
                     {p.forecast[day]}
                   </span>
                 </div>
@@ -531,7 +542,7 @@ export default function AstralGridiron() {
 
           {/* Forecast Chart */}
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <div style={{ display: "flex", gap: 24, fontSize: 11, color: "#555" }}>
+            <div className="forecast-legend" style={{ display: "flex", gap: 24, fontSize: 11, color: "#555" }}>
               <span><span className="legend-dot" style={{ background: "#fff" }} />{p1.name}</span>
               <span><span className="legend-dot" style={{ background: "#555" }} />{p2.name}</span>
             </div>
